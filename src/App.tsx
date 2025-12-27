@@ -3,7 +3,8 @@ import HomePage from "./pages/Home";
 import LoginPage from "./pages/Login";
 import RegisterPage from "./pages/Register";
 
-import "./styles/index.css"
+// import JobsPage from "./pages/Jobs";
+import CreateJobPage from "./pages/CreateJob";
 
 function App() {
   return <>
@@ -16,6 +17,19 @@ function App() {
       <Route path="/" element={<HomePage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
+      {/* <Route path="/jobs" element={<JobsPage />} /> */}
+      <Route path="/create-job" element={<CreateJobPage/>} />
+
+
+
+       {/* <Route 
+          path="/" 
+          element={
+            <ProtectedRoute allowedRoles={["USEr"]}>
+              <></>
+            </ProtectedRoute>
+          } 
+        /> */}
     </Routes>
   </>
 }
