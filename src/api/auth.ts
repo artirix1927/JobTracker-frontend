@@ -6,9 +6,10 @@ export const login = async (email: string, password: string) => {
     password,
   });
 
-  console.log(res.data)
-  // save tokens
-  localStorage.setItem("accessToken", res.data.accessToken);
+  const { accessToken, refreshToken } = res.data;
+
+  localStorage.setItem("accessToken", accessToken);
+  localStorage.setItem("refreshToken", refreshToken);
 
   return res.data;
 };
