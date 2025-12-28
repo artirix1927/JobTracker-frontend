@@ -30,6 +30,8 @@ export default function Clock() {
   const dow = time.getDay(); // 0 = Sunday
 
   return (
+
+    <div className="no-tailwind">
     <div id="clock" className={theme}>
       <div className="display">
         <div className="weekdays">
@@ -57,6 +59,7 @@ export default function Clock() {
       </div>
 
       
+    </div>
     </div>
   );
 }

@@ -1,3 +1,8 @@
+.no-tailwind * {
+  all: revert;
+}
+
+
 #clock{
 	width:370px;
 	padding:40px;
