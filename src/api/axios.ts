@@ -23,8 +23,8 @@ const refreshToken = async () => {
     refreshToken: refresh,
   });
 
-  localStorage.setItem("accessToken", res.data.accessToken);
-  return res.data.accessToken;
+  localStorage.setItem("accessToken", res.data);
+  return res.data;
 };
 
 // Axios request interceptor
