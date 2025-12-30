@@ -20,7 +20,7 @@ export default function HomePage() {
         <label>💼 CAREER HUB 💼</label>
         
         <div style={{ display: "flex", flexDirection: "row", gap: "16px", justifyContent: "center", marginTop: "40px" }}>
-            <Link to="/login"><button style={styles.button}>LOOK FOR OPPORTUNITIES</button></Link>
+            <Link to="/jobs"><button style={styles.button}>LOOK FOR OPPORTUNITIES</button></Link>
             <Link to="/login"><button style={{ ...styles.button, backgroundColor: "#2563eb", color: "#ffffff" }}>REVIEW APPLICATIONS</button></Link>
         </div>
         <Clock></Clock>
