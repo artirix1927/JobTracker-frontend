@@ -10,6 +10,11 @@ export type JobPostPayload = {
   location: string;
 };
 
+export type JobPostsByUserPayload = {
+  userId: number;
+};
+
+
 export const createJobPost = async (payload: JobPostPayload) => {
   try {
     const response = await api.post("/job-posts/create", payload); // make sure your backend endpoint matches
@@ -22,5 +27,13 @@ export const createJobPost = async (payload: JobPostPayload) => {
 
 export const getAllJobs = async (): Promise<JobPost[]> => {
   const res = await api.get("/job-posts/get-all");
+  return res.data;
+};
+
+
+export const getJobsByUser = async (payload: JobPostsByUserPayload): Promise<JobPost[]> => {
+  const res = await api.get("/job-posts/by-user", {
+    params: payload, // <-- this will become ?userId=123
+  });
   return res.data;
 };

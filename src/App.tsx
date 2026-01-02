@@ -5,6 +5,10 @@ import RegisterPage from "./pages/Register";
 
 import JobsPage from "./pages/Jobs";
 import CreateJobPage from "./pages/CreateJob";
+import ApplyPage from "./pages/Apply";
+import MyJobsPage from "./pages/MyJobs";
+
+import './pdfWorker'
 
 function App() {
   return <>
@@ -19,6 +23,10 @@ function App() {
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/jobs" element={<JobsPage />} />
       <Route path="/create-job" element={<CreateJobPage/>} />
+      <Route path="/apply" element={<ApplyPage/>} />
+      <Route path="/my-jobs" element={<MyJobsPage/>} />
+
+
 
 
 
