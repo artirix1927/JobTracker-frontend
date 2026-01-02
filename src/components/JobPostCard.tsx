@@ -2,6 +2,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
 import "highlight.js/styles/github.css";
+import { useState } from "react";
 
 type JobPostProps = {
   title: string;
@@ -19,6 +20,8 @@ export default function JobPostCard({
   jobType,
   location,
 }: JobPostProps) {
+  const [expanded, setExpanded] = useState(false);
+
   const companySearchUrl = `https://www.google.com/search?q=${encodeURIComponent(company)}`;
   const locationMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location)}`;
 
@@ -70,7 +73,11 @@ export default function JobPostCard({
         {location}
       </a>
 
-      <div className="text-gray-800 mb-2 prose">
+      <div
+        className={`text-gray-800 mb-2 prose transition-all ${
+          expanded ? "" : "line-clamp-5"
+        }`}
+      >
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
           rehypePlugins={[rehypeHighlight]}
@@ -99,6 +106,12 @@ export default function JobPostCard({
           {description}
         </ReactMarkdown>
       </div>
+      <button
+        onClick={() => setExpanded(!expanded)}
+        className="mt-2 text-sm text-blue-600 hover:underline"
+      >
+        {expanded ? "Show less" : "Show more"}
+      </button>
     </div>
   );
 }
