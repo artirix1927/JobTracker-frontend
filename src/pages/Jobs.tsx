@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Search from "../components/Search";
 import JobPostCard from "../components/JobPostCard";
-import { getAllJobs } from "../api/job-post";
+import { getAllJobs, searchByTitle } from "../api/job-post";
 import type { JobPost } from "../types";
 import JobListItem from "../components/JobList";
 
@@ -20,10 +20,24 @@ export default function JobsPage() {
     });
   }, []);
 
+
+  const handleSearch = async (title: string, address: string) => {
+    if (!address.trim() && !title.trim()) {
+      const all = await getAllJobs();
+      setJobs(all);
+      setSelectedJob(all[0] ?? null);
+      return;
+    }
+
+    const results = await searchByTitle({ title: title, address: address });
+    setJobs(results);
+    setSelectedJob(results[0] ?? null);
+  };
+
   return (
     <>
       <Navbar />
-      <Search />
+      <Search onSearch={handleSearch} />
 
       {/* PAGE CONTAINER */}
       <div className="px-8 lg:px-16 max-w-7xl mx-auto">

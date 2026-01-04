@@ -15,6 +15,13 @@ export type JobPostsByUserPayload = {
 };
 
 
+export type JobPostsByTitlePayload = {
+  title: string;
+  address: string;
+};
+
+
+
 export const createJobPost = async (payload: JobPostPayload) => {
   try {
     const response = await api.post("/job-posts/create", payload); // make sure your backend endpoint matches
@@ -37,3 +44,12 @@ export const getJobsByUser = async (payload: JobPostsByUserPayload): Promise<Job
   });
   return res.data;
 };
+
+
+export const searchByTitle = async (payload: JobPostsByTitlePayload): Promise<JobPost[]> => {
+  const res = await api.get("/job-posts/search", {
+    params: payload, 
+  });
+  return res.data;
+};
+
