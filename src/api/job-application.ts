@@ -15,6 +15,13 @@ export type JobApplicationsGetByJobPayload = {
   jobPostId: number;
 };
 
+export type JobApplicationSetStatus = {
+  jobApplicationId: number;
+  newStatus: string;
+  
+};
+
+
 
 
 export async function createJobApplication(
@@ -57,6 +64,19 @@ export async function getApplicationsByJob(
   
   const response = await api.get(
     "/job-application/by-job-post", {params: payload }
+  );
+
+  return response.data;
+}
+
+
+
+export async function setApplicationStatus(
+  payload: JobApplicationSetStatus
+) {
+  
+  const response = await api.post(
+    "/job-application/set-status", payload
   );
 
   return response.data;

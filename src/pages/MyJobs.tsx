@@ -4,9 +4,17 @@ import Navbar from "../components/Navbar";
 import JobPostCard from "../components/JobPostCard";
 import JobListItem from "../components/JobList";
 import { getJobsByUser } from "../api/job-post";
-import { getApplicationsByJob } from "../api/job-application";
+import { getApplicationsByJob, setApplicationStatus } from "../api/job-application";
 import type { JobPost, JobApplication } from "../types";
 import { Document, Page } from 'react-pdf';
+
+
+const statusClasses: Record<JobApplication["status"], string> = {
+  APPLIED: "bg-yellow-100 text-yellow-800",
+  INTERVIEW: "bg-blue-100 text-blue-800",
+  OFFER: "bg-green-100 text-green-800",
+  REJECTED: "bg-red-100 text-red-800",
+};
 
 
 export default function MyJobsPage() {
@@ -46,6 +54,30 @@ export default function MyJobsPage() {
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, []);
+
+
+  const handleStatusChange = async (
+    applicationId: number,
+    newStatus: JobApplication["status"]
+  ) => {
+    try {
+      // optimistic UI update
+      setApplications((prev) =>
+        prev.map((app) =>
+          app.id === applicationId
+            ? { ...app, status: newStatus }
+            : app
+        )
+      );
+
+      await setApplicationStatus({
+        jobApplicationId: applicationId,
+        newStatus,
+      });
+    } catch (err) {
+      console.error("Failed to update status", err);
+    }
+  };
 
 
   return (
@@ -113,9 +145,18 @@ export default function MyJobsPage() {
                     {/* RIGHT: actions */}
                     <div className="flex flex-col items-end gap-2">
                       {/* Status badge */}
-                      <span className="text-xs px-2 py-1 rounded-full bg-yellow-100 text-yellow-800">
-                        Applied
-                      </span>
+                      <select
+                        value={app.status}
+                        onChange={(e) =>
+                          handleStatusChange(app.id, e.target.value as JobApplication["status"])
+                        }
+                        className={`text-xs px-2 py-1 rounded-full border bg-white cursor-pointer ${statusClasses[app.status]}`}
+                      >
+                        <option value="APPLIED">Applied</option>
+                        <option value="INTERVIEW">Interview</option>
+                        <option value="OFFER">Offer</option>
+                        <option value="REJECTED">Rejected</option>
+                      </select>
 
                       {app.resumePath && (
                         <button
