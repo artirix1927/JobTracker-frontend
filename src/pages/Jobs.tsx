@@ -59,6 +59,7 @@ export default function JobsPage() {
           <div className="w-1/2 overflow-y-auto p-8 bg-gray-50">
             {selectedJob ? (
               <JobPostCard
+                id={selectedJob.id}
                 title={selectedJob.title}
                 company={selectedJob.company}
                 description={selectedJob.description}

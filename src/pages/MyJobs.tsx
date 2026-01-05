@@ -60,7 +60,7 @@ export default function MyJobsPage() {
           <div className="w-2/3 overflow-y-auto p-6 bg-gray-50">
             {selectedJob ? (
               <>
-                <JobPostCard {...selectedJob} />
+                <JobPostCard {...selectedJob} showApplyButton={false}/>
                 <h2 className="text-xl font-semibold mt-6 mb-2">Applications</h2>
                 <ApplicationsList
                   applications={applications}
