@@ -8,8 +8,8 @@ export default function Navbar({ isLoggedIn = false, username = "" }) {
       <div style={styles.links}>
         {!isLoggedIn ? (
           <>
-            <a href="/login" style={styles.link}>Login</a>
-            <a href="/register" style={{ ...styles.link, ...styles.register }}>Register</a>
+            <a href="/my-jobs" style={styles.link}>Employers/Post Job</a>
+            {/* <a href="/register" style={{ ...styles.link, ...styles.register }}>Register</a> */}
           </>
         ) : (
           <div style={styles.profile}>
