@@ -14,7 +14,6 @@ export type JobApplication = {
   id: number;
   userId: number;
   jobPostId: number;
-  status: string;
   appliedAt: Date;
   fullName: string;
   email: string;
@@ -22,6 +21,7 @@ export type JobApplication = {
   address: string;
   resumePath: string;
   resumeFilename: string;
+  status: "APPLIED" | "INTERVIEW" | "OFFER" | "REJECTED";
 
 
 }
