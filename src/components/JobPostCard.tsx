@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 
 type JobPostProps = {
-  id: number;
+  id?: number;
   title: string;
   company: string;
   description: string;
