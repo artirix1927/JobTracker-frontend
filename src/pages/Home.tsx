@@ -21,7 +21,7 @@ export default function HomePage() {
         
         <div style={{ display: "flex", flexDirection: "row", gap: "16px", justifyContent: "center", marginTop: "40px" }}>
             <Link to="/jobs"><button style={styles.button}>LOOK FOR OPPORTUNITIES</button></Link>
-            <Link to="/login"><button style={{ ...styles.button, backgroundColor: "#2563eb", color: "#ffffff" }}>REVIEW APPLICATIONS</button></Link>
+            <Link to="/my-jobs"><button style={{ ...styles.button, backgroundColor: "#2563eb", color: "#ffffff" }}>REVIEW APPLICATIONS</button></Link>
         </div>
         <Clock></Clock>
       </div>
