@@ -9,6 +9,7 @@ import ApplyPage from "./pages/Apply";
 import MyJobsPage from "./pages/MyJobs";
 
 import './pdfWorker'
+import { ProtectedRoute } from "./components/ProtectedRoute";
 
 function App() {
   return <>
@@ -22,22 +23,14 @@ function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/jobs" element={<JobsPage />} />
-      <Route path="/create-job" element={<CreateJobPage/>} />
       <Route path="/apply/:jobId" element={<ApplyPage />} />
-      <Route path="/my-jobs" element={<MyJobsPage/>} />
 
-
-
-
-
-       {/* <Route 
-          path="/" 
-          element={
-            <ProtectedRoute allowedRoles={["USEr"]}>
-              <></>
-            </ProtectedRoute>
-          } 
-        /> */}
+      <Route
+        element={<ProtectedRoute allowedRoles={["EMPLOYER", "ADMIN"]} />}
+      >
+        <Route path="/create-job" element={<CreateJobPage />} />
+        <Route path="/my-jobs" element={<MyJobsPage />} />
+      </Route>
     </Routes>
   </>
 }

@@ -1,6 +1,5 @@
 import { jwtDecode } from "jwt-decode";
-import type { JSX } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 
 
 type TokenPayload = {
@@ -23,18 +22,14 @@ export const getUserRole = (): string | null => {
 };
 
 
-type ProtectedRouteProps = {
-  allowedRoles: string[];
-  children: JSX.Element;
-};
 
-export const ProtectedRoute = ({ allowedRoles, children }: ProtectedRouteProps) => {
-  const role = getUserRole();
 
-  if (!role || !allowedRoles.includes(role)) {
-    // Redirect if not logged in or role not allowed
+export function ProtectedRoute({ allowedRoles }: { allowedRoles: string[] }) {
+  const userRole = getUserRole(); // string | null
+
+  if (!userRole || !allowedRoles.includes(userRole)) {
     return <Navigate to="/login" replace />;
   }
 
-  return children;
-};
+  return <Outlet />;
+}
