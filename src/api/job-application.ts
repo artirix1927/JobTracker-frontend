@@ -15,12 +15,18 @@ export type JobApplicationsGetByJobPayload = {
   jobPostId: number;
 };
 
-export type JobApplicationSetStatus = {
+export type JobApplicationSetStatusPayload = {
   jobApplicationId: number;
   newStatus: string;
   
 };
 
+export type getApplicationsByJobPayload = {
+  jobPostId: number;
+  page: number;
+  size: number;
+  
+};
 
 
 
@@ -58,21 +64,18 @@ export async function createJobApplication(
 
 
 
-export async function getApplicationsByJob(
-  payload: JobApplicationsGetByJobPayload
-) {
-  
-  const response = await api.get(
-    "/job-application/by-job-post", {params: payload }
-  );
 
-  return response.data;
+export async function getApplicationsByJob(payload: getApplicationsByJobPayload ) {
+  const res = await api.get(
+    `/job-application/by-job-post`, {params: payload}
+  );
+  return res.data;
 }
 
 
 
 export async function setApplicationStatus(
-  payload: JobApplicationSetStatus
+  payload: JobApplicationSetStatusPayload
 ) {
   
   const response = await api.post(

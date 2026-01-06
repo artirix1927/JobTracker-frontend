@@ -7,14 +7,27 @@ import ResumeModal from "../components/ResumeModal";
 import { getJobsByUser } from "../api/job-post";
 import { getApplicationsByJob, setApplicationStatus } from "../api/job-application";
 import type { JobPost, JobApplication } from "../types";
+import { useAuth } from "../hooks";
 
 export default function MyJobsPage() {
   const [jobs, setJobs] = useState<JobPost[]>([]);
-  const [selectedJob, setSelectedJob] = useState<JobPost | null>(null);
+  const [selectedJob, setSelectedJob] = useState<JobPost | null>();
   const [applications, setApplications] = useState<JobApplication[]>([]);
   const [openResume, setOpenResume] = useState<string | null>(null);
   const [showJobPost, setShowJobPost] = useState(false); 
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+
+  const { user } = useAuth();
+
   useEffect(() => {
+    setPage(0);
+  }, [selectedJob]);
+
+  useEffect(() => {
+
+    if (!user) return;
+    
     getJobsByUser({ userId: 1 }).then((data) => {
       setJobs(data);
       if (data.length > 0) setSelectedJob(data[0]);
@@ -22,12 +35,18 @@ export default function MyJobsPage() {
   }, []);
 
   useEffect(() => {
-    if (selectedJob) {
-      getApplicationsByJob({ jobPostId: selectedJob.id }).then(setApplications);
-    } else {
-      setApplications([]);
-    }
-  }, [selectedJob]);
+    if (!selectedJob) return;
+
+    getApplicationsByJob({
+      jobPostId: selectedJob.id,
+      page,
+      size: 10,
+    }).then((data) => {
+      console.log(data)
+      setApplications(data.content);
+      setTotalPages(data.totalPages);
+    });
+  }, [selectedJob, page]);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => (e.key === "Escape" || e.key === "Backspace") && setOpenResume(null);
@@ -84,7 +103,30 @@ export default function MyJobsPage() {
                   onStatusChange={handleStatusChange}
                   onViewResume={setOpenResume}
                 />
-              </>
+                {totalPages > 1 && (
+                  <div className="flex justify-center gap-2 mt-6">
+                    <button
+                      disabled={page === 0}
+                      onClick={() => setPage((p) => p - 1)}
+                      className="px-3 py-1 border rounded disabled:opacity-50"
+                    >
+                      Prev
+                    </button>
+
+                    <span className="px-3 py-1">
+                      Page {page + 1} of {totalPages}
+                    </span>
+
+                    <button
+                      disabled={page + 1 >= totalPages}
+                      onClick={() => setPage((p) => p + 1)}
+                      className="px-3 py-1 border rounded disabled:opacity-50"
+                    >
+                      Next
+                    </button>
+                  </div>
+                )}
+                </>
             ) : (
               <div className="text-gray-500 text-center mt-10">Select a job to see details</div>
             )}
