@@ -25,3 +25,17 @@ export type JobApplication = {
 
 
 }
+
+export type PageResponse<T> = {
+  content: T[];
+  page: Page;
+};
+
+
+export type Page = {
+  number: number; // current page
+  size: number;
+  totalPages: number;
+  totalElements: number;
+  
+};

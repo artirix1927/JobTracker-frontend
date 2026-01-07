@@ -1,4 +1,4 @@
-import type { JobPost } from "../types";
+import type { JobPost, PageResponse } from "../types";
 import api from "./axios";
 
 export type JobPostPayload = {
@@ -10,14 +10,18 @@ export type JobPostPayload = {
   location: string;
 };
 
+export type PaginationPayload = {
+  page: number;
+  size: number;
+};
+
 export type JobPostsByUserPayload = {
   userId: number;
 };
 
-
-export type JobPostsByTitlePayload = {
-  title: string;
-  address: string;
+export type JobPostsByTitlePayload = PaginationPayload & {
+  title?: string;
+  address?: string;
 };
 
 
@@ -32,8 +36,12 @@ export const createJobPost = async (payload: JobPostPayload) => {
   }
 };
 
-export const getAllJobs = async (): Promise<JobPost[]> => {
-  const res = await api.get("/job-posts/get-all");
+export const getAllJobs = async (
+  payload: PaginationPayload
+): Promise<PageResponse<JobPost>> => {
+  const res = await api.get("/job-posts/all", {
+    params: payload,
+  });
   return res.data;
 };
 
@@ -46,9 +54,11 @@ export const getJobsByUser = async (payload: JobPostsByUserPayload): Promise<Job
 };
 
 
-export const searchByTitle = async (payload: JobPostsByTitlePayload): Promise<JobPost[]> => {
+export const searchByTitle = async (
+  payload: JobPostsByTitlePayload
+): Promise<PageResponse<JobPost>> => {
   const res = await api.get("/job-posts/search", {
-    params: payload, 
+    params: payload,
   });
   return res.data;
 };
