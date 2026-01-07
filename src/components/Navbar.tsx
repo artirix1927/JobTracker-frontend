@@ -1,14 +1,15 @@
 import type { CSSProperties } from "react";
+import { Link } from "react-router-dom";
 
 export default function Navbar({ isLoggedIn = false, username = "" }) {
   return (
     <nav style={styles.nav}>
-      <div style={styles.logo}>JobTracker</div>
+      <div style={styles.logo}><Link to="/">JobTracker</Link></div>
 
       <div style={styles.links}>
         {!isLoggedIn ? (
           <>
-            <a href="/my-jobs" style={styles.link}>Employers/Post Job</a>
+            <Link to="/my-jobs" style={styles.link}>Employers/Post Job</Link>
             {/* <a href="/register" style={{ ...styles.link, ...styles.register }}>Register</a> */}
           </>
         ) : (
