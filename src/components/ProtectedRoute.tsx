@@ -28,7 +28,7 @@ export function ProtectedRoute({ allowedRoles }: { allowedRoles: string[] }) {
   const userRole = getUserRole(); // string | null
 
   if (!userRole || !allowedRoles.includes(userRole)) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/" replace />;
   }
 
   return <Outlet />;
