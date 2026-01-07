@@ -46,13 +46,14 @@ export const getAllJobs = async (
 };
 
 
-export const getJobsByUser = async (payload: JobPostsByUserPayload): Promise<JobPost[]> => {
-  const res = await api.get("/job-posts/by-user", {
-    params: payload, // <-- this will become ?userId=123
+export const getJobsByUserPaged = async (
+  payload: JobPostsByTitlePayload & { userId: number }
+): Promise<PageResponse<JobPost>> => {
+  const res = await api.get("/job-posts/by-user-paged", {
+    params: payload,
   });
   return res.data;
 };
-
 
 export const searchByTitle = async (
   payload: JobPostsByTitlePayload

@@ -4,49 +4,54 @@ import JobPostCard from "../components/JobPostCard";
 import JobListItem from "../components/JobList";
 import ApplicationsList from "../components/ApplicationsList";
 import ResumeModal from "../components/ResumeModal";
-import { getJobsByUser } from "../api/job-post";
+import { getJobsByUserPaged } from "../api/job-post"; // <- new paginated API
 import { getApplicationsByJob, setApplicationStatus } from "../api/job-application";
 import type { JobPost, JobApplication } from "../types";
 import { useAuth } from "../hooks";
 
 export default function MyJobsPage() {
-  const [jobs, setJobs] = useState<JobPost[]>([]);
-  const [selectedJob, setSelectedJob] = useState<JobPost | null>();
-  const [applications, setApplications] = useState<JobApplication[]>([]);
-  const [openResume, setOpenResume] = useState<string | null>(null);
-  const [showJobPost, setShowJobPost] = useState(false); 
-  const [page, setPage] = useState(0);
-  const [totalPages, setTotalPages] = useState(0);
-
   const { user } = useAuth();
 
-  useEffect(() => {
-    setPage(0);
-  }, [selectedJob]);
+  // Jobs state
+  const [jobs, setJobs] = useState<JobPost[]>([]);
+  const [selectedJob, setSelectedJob] = useState<JobPost | null>(null);
+  const [jobsPage, setJobsPage] = useState(0);
+  const [jobsTotalPages, setJobsTotalPages] = useState(0);
+
+  // Applications state
+  const [applications, setApplications] = useState<JobApplication[]>([]);
+  const [applicationsPage, setApplicationsPage] = useState(0);
+  const [applicationsTotalPages, setApplicationsTotalPages] = useState(0);
+
+  const [openResume, setOpenResume] = useState<string | null>(null);
+  const [showJobPost, setShowJobPost] = useState(false);
 
   useEffect(() => {
-
     if (!user) return;
-    
-    getJobsByUser({ userId: 1 }).then((data) => {
-      setJobs(data);
-      if (data.length > 0) setSelectedJob(data[0]);
+
+    getJobsByUserPaged({ userId: user.id, page: jobsPage, size: 10 }).then((data) => {
+      setJobs(data.content);
+      setJobsTotalPages(data.page.totalPages);
+      if (data.content.length > 0 && !selectedJob) setSelectedJob(data.content[0]);
     });
-  }, []);
+  }, [user, jobsPage]);
+
+  useEffect(() => {
+    setApplicationsPage(0);
+  }, [selectedJob]);
 
   useEffect(() => {
     if (!selectedJob) return;
 
     getApplicationsByJob({
       jobPostId: selectedJob.id,
-      page,
+      page: applicationsPage,
       size: 10,
     }).then((data) => {
-      console.log(data)
       setApplications(data.content);
-      setTotalPages(data.totalPages);
+      setApplicationsTotalPages(data.totalPages);
     });
-  }, [selectedJob, page]);
+  }, [selectedJob, applicationsPage]);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => (e.key === "Escape" || e.key === "Backspace") && setOpenResume(null);
@@ -55,7 +60,10 @@ export default function MyJobsPage() {
   }, []);
 
   const handleStatusChange = async (applicationId: number, newStatus: JobApplication["status"]) => {
-    setApplications((prev) => prev.map((app) => (app.id === applicationId ? { ...app, status: newStatus } : app)));
+    setApplications((prev) =>
+      prev.map((app) => (app.id === applicationId ? { ...app, status: newStatus } : app))
+    );
+
     try {
       await setApplicationStatus({ jobApplicationId: applicationId, newStatus });
     } catch (err) {
@@ -80,13 +88,37 @@ export default function MyJobsPage() {
                 onClick={() => setSelectedJob(job)}
               />
             ))}
+
+            {/* Jobs pagination */}
+            {jobsTotalPages > 1 && (
+              <div className="flex justify-center gap-2 p-2">
+                <button
+                  disabled={jobsPage === 0}
+                  onClick={() => setJobsPage((p) => p - 1)}
+                  className="px-3 py-1 border rounded disabled:opacity-50"
+                >
+                  Prev
+                </button>
+
+                <span className="px-3 py-1">
+                  Page {jobsPage + 1} of {jobsTotalPages}
+                </span>
+
+                <button
+                  disabled={jobsPage + 1 >= jobsTotalPages}
+                  onClick={() => setJobsPage((p) => p + 1)}
+                  className="px-3 py-1 border rounded disabled:opacity-50"
+                >
+                  Next
+                </button>
+              </div>
+            )}
           </div>
 
-          {/* RIGHT: job + applications */}
+          {/* RIGHT: Job + Applications */}
           <div className="w-2/3 overflow-y-auto p-6 bg-gray-50">
             {selectedJob ? (
               <>
-                {/* Toggle button */}
                 <button
                   onClick={() => setShowJobPost(!showJobPost)}
                   className="mb-4 px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 text-sm"
@@ -94,7 +126,6 @@ export default function MyJobsPage() {
                   {showJobPost ? "Hide Job Details" : "Show Job Details"}
                 </button>
 
-                {/* Conditionally render job card */}
                 {showJobPost && <JobPostCard {...selectedJob} showApplyButton={false} />}
 
                 <h2 className="text-xl font-semibold mt-6 mb-2">Applications</h2>
@@ -103,23 +134,22 @@ export default function MyJobsPage() {
                   onStatusChange={handleStatusChange}
                   onViewResume={setOpenResume}
                 />
-                {totalPages > 1 && (
-                  <div className="flex justify-center gap-2 mt-6">
+
+                {applicationsTotalPages > 1 && (
+                  <div className="flex justify-center gap-2 mt-4">
                     <button
-                      disabled={page === 0}
-                      onClick={() => setPage((p) => p - 1)}
+                      disabled={applicationsPage === 0}
+                      onClick={() => setApplicationsPage((p) => p - 1)}
                       className="px-3 py-1 border rounded disabled:opacity-50"
                     >
                       Prev
                     </button>
-
                     <span className="px-3 py-1">
-                      Page {page + 1} of {totalPages}
+                      Page {applicationsPage + 1} of {applicationsTotalPages}
                     </span>
-
                     <button
-                      disabled={page + 1 >= totalPages}
-                      onClick={() => setPage((p) => p + 1)}
+                      disabled={applicationsPage + 1 >= applicationsTotalPages}
+                      onClick={() => setApplicationsPage((p) => p + 1)}
                       className="px-3 py-1 border rounded disabled:opacity-50"
                     >
                       Next
