@@ -22,34 +22,24 @@ export default function JobsPage() {
 
   const listRef = useRef<HTMLDivElement>(null);
 
-  const loadJobs = async (nextPage: number, reset = false) => {
+  const loadJobs = async (
+    nextPage: number,
+    reset = false,
+    params: { title?: string; address?: string } | null = null
+  ) => {
     if (loading) return;
-
     setLoading(true);
-    console.log(nextPage, reset)
 
-    const res = searchParams
-      ? await searchByTitle({
-          ...searchParams,
-          page: nextPage,
-          size: PAGE_SIZE,
-        })
-      : await getAllJobs({
-          page: nextPage,
-          size: PAGE_SIZE,
-        });
-
-    console.log(res)
+    const res = params
+      ? await searchByTitle({ ...params, page: nextPage, size: PAGE_SIZE })
+      : await getAllJobs({ page: nextPage, size: PAGE_SIZE });
 
     setJobs(prev => (reset ? res.content : [...prev, ...res.content]));
-
     setPage(nextPage);
     setTotalPages(res.page.totalPages);
     setLoading(false);
 
-    if (reset && res.content.length > 0) {
-      setSelectedJob(res.content[0]);
-    }
+    if (reset && res.content.length > 0) setSelectedJob(res.content[0]);
   };
 
   useEffect(() => {
@@ -85,14 +75,10 @@ export default function JobsPage() {
     setPage(0);
     setTotalPages(null);
 
-    if (!address.trim() && !title.trim()) {
-      setSearchParams(null);
-      loadJobs(0, true);
-      return;
-    }
+    const params = title.trim() || address.trim() ? { title, address } : null;
 
-    setSearchParams({ title, address });
-    loadJobs(0, true);
+    setSearchParams(params); // optional if you still need it elsewhere
+    loadJobs(0, true, params);
   };
 
   return (
