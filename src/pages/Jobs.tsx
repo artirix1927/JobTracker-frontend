@@ -15,11 +15,6 @@ export default function JobsPage() {
   const [totalPages, setTotalPages] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const [searchParams, setSearchParams] = useState<{
-    title?: string;
-    address?: string;
-  } | null>(null);
-
   const listRef = useRef<HTMLDivElement>(null);
 
   const loadJobs = async (
@@ -77,7 +72,6 @@ export default function JobsPage() {
 
     const params = title.trim() || address.trim() ? { title, address } : null;
 
-    setSearchParams(params); // optional if you still need it elsewhere
     loadJobs(0, true, params);
   };
 
