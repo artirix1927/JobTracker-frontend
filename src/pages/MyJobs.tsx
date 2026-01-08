@@ -26,13 +26,17 @@ export default function MyJobsPage() {
   const [openResume, setOpenResume] = useState<string | null>(null);
   const [showJobPost, setShowJobPost] = useState(false);
 
+  const [jobsLoading, setJobsLoading] = useState(false);
+  const [applicationsLoading, setApplicationsLoading] = useState(false);  
+
   useEffect(() => {
     if (!user) return;
-
+    setJobsLoading(true);
     getJobsByUserPaged({ userId: user.id, page: jobsPage, size: 10 }).then((data) => {
       setJobs(data.content);
       setJobsTotalPages(data.page.totalPages);
       if (data.content.length > 0 && !selectedJob) setSelectedJob(data.content[0]);
+      setJobsLoading(false);
     });
   }, [user, jobsPage]);
 
@@ -42,7 +46,7 @@ export default function MyJobsPage() {
 
   useEffect(() => {
     if (!selectedJob) return;
-
+    setApplicationsLoading(true);
     getApplicationsByJob({
       jobPostId: selectedJob.id,
       page: applicationsPage,
@@ -50,6 +54,7 @@ export default function MyJobsPage() {
     }).then((data) => {
       setApplications(data.content);
       setApplicationsTotalPages(data.page.totalPages);
+      setApplicationsLoading(false);
     });
   }, [selectedJob, applicationsPage]);
 
@@ -80,7 +85,24 @@ export default function MyJobsPage() {
 
           {/* LEFT: job list */}
           <div className="w-1/3 border-r overflow-y-auto">
-            {jobs.map((job) => (
+            {/* Skeleton loader */}
+            {jobsLoading &&
+              Array.from({ length: 5 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="h-16 m-2 rounded bg-gray-100 animate-pulse"
+                />
+              ))}
+
+            {/* Empty state */}
+            {!jobsLoading && jobs.length === 0 && (
+              <div className="text-center text-gray-400 mt-6">
+                You haven’t posted any jobs yet
+              </div>
+            )}
+
+            {!jobsLoading &&
+            jobs.map((job) => (
               <JobListItem
                 key={job.id}
                 job={job}
@@ -129,11 +151,27 @@ export default function MyJobsPage() {
                 {showJobPost && <JobPostCard {...selectedJob} showApplyButton={false} />}
 
                 <h2 className="text-xl font-semibold mt-6 mb-2">Applications</h2>
-                <ApplicationsList
-                  applications={applications}
-                  onStatusChange={handleStatusChange}
-                  onViewResume={setOpenResume}
-                />
+                {/* Loading */}
+                {applicationsLoading && (
+                  <div className="text-gray-400 text-center mt-4">
+                    Loading applications…
+                  </div>
+                )}
+
+                {/* Empty */}
+                {!applicationsLoading && applications.length === 0 && (
+                  <div className="text-gray-400 text-center mt-4">
+                    No applications yet
+                  </div>
+                )}
+                
+                {!applicationsLoading && applications.length > 0 && (
+                  <ApplicationsList
+                    applications={applications}
+                    onStatusChange={handleStatusChange}
+                    onViewResume={setOpenResume}
+                  />
+                )}
 
                 {applicationsTotalPages > 1 && (
                   <div className="flex justify-center gap-2 mt-4">

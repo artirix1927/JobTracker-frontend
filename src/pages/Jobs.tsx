@@ -83,22 +83,28 @@ export default function JobsPage() {
       <div className="px-8 lg:px-16 max-w-7xl mx-auto">
         <div className="flex h-[calc(100vh-260px)] border rounded-lg overflow-hidden bg-white">
           <div ref={listRef} className="w-1/2 border-r overflow-y-auto h-full" >
-            {jobs.map((job) => (
-              <JobListItem
-                key={job.id}
-                job={job}
-                selected={selectedJob?.id === job.id}
-                onClick={() => setSelectedJob(job)}
-              />
-            ))}
-            
-            {loading && (
+            {loading && jobs.length === 0 ? (
+              Array.from({ length: 5 }).map((_, i) => (
+                <div key={i} className="p-4 border-b animate-pulse bg-gray-100 rounded mb-2">
+                  <div className="h-4 bg-gray-300 w-3/4 mb-2"></div>
+                  <div className="h-3 bg-gray-300 w-1/2"></div>
+                </div>
+              ))
+            ) : jobs.length === 0 ? (
+              <div className="p-4 text-center text-gray-400">No jobs found</div>
+            ) : (
+              jobs.map((job) => (
+                <JobListItem key={job.id} job={job} selected={selectedJob?.id === job.id} onClick={() => setSelectedJob(job)} />
+              ))
+            )}
+
+            {loading && jobs.length > 0 && (
               <div className="p-4 text-center text-gray-500">
                 Loading…
               </div>
             )}
 
-            {!loading && totalPages !== null && page + 1 >= totalPages && (
+            {!loading && totalPages !== null && page + 1 >= totalPages && jobs.length > 0 && (
               <div className="p-4 text-center text-gray-400">
                 No more jobs
               </div>
