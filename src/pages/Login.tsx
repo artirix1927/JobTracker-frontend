@@ -6,15 +6,18 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
   const navigate = useNavigate()
 
   const handleLogin = async () => {
     try {
+      setLoading(true)
       await login(email, password);
       navigate("/")
     } catch (e) {
-      alert("Invalid credentials");
-      console.log(e)
+      setError("Invalid credentials")
     }
   };
 
@@ -37,9 +40,12 @@ export default function Login() {
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        <button onClick={handleLogin}>Login</button>
+        <button onClick={handleLogin} disabled={loading} className="disabled:opacity-50">
+          {loading ? "Logging in…" : "Login"}</button>
 
         <p>Don’t have an account? <Link to="/register"><span style={{textDecoration:"underline"}}>Register</span></Link></p>
+
+        {error && <div className="text-red-500 mt-2">{error}</div>}
       </div>
     </div>
   );
