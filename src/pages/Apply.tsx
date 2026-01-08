@@ -11,6 +11,7 @@ export default function ApplyPage() {
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [resume, setResume] = useState<File | null>(null);
+  const [success, setSuccess] = useState(false);
 
   return (
     <div className="max-w-md mx-auto mt-10">
@@ -32,8 +33,11 @@ export default function ApplyPage() {
           setPhone("");
           setAddress("");
           setResume(null);
+          setSuccess(true); // show success mess
         }}
       />
+      
+      {success && <div className="text-center text-green-600 mt-2">Application submitted successfully!</div>}
     </div>
   );
 }

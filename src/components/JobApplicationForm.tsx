@@ -2,6 +2,7 @@ import { createJobApplication } from "../api/job-application";
 
 type JobApplicationFormProps = {
   onSuccess?: () => void;
+  onSubmit?: () => void;
   jobPostId: number;
 
   fullName: string;
@@ -22,6 +23,7 @@ type JobApplicationFormProps = {
 
 export default function JobApplicationForm({
   onSuccess,
+  onSubmit,
   jobPostId,
   fullName, setFullName,
   email, setEmail,
@@ -31,7 +33,7 @@ export default function JobApplicationForm({
 }: JobApplicationFormProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    if (onSubmit) onSubmit();
     try {
      
         await createJobApplication({
@@ -43,8 +45,7 @@ export default function JobApplicationForm({
             resume,
             });
 
-      alert("Application submitted!");
-      if (onSuccess) onSuccess();
+        if (onSuccess) onSuccess();
     } catch (err) {
       console.error(err);
       alert("Failed to submit application");
