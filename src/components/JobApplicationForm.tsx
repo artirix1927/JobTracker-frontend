@@ -1,8 +1,12 @@
+import { useState } from "react";
 import { createJobApplication } from "../api/job-application";
+import ResumeModal from "./ResumeModal";
 
 type JobApplicationFormProps = {
   onSuccess?: () => void;
   onSubmit?: () => void;
+  disabled: boolean; 
+
   jobPostId: number;
 
   fullName: string;
@@ -24,13 +28,18 @@ type JobApplicationFormProps = {
 export default function JobApplicationForm({
   onSuccess,
   onSubmit,
+  disabled,
   jobPostId,
   fullName, setFullName,
   email, setEmail,
   phone, setPhone,
   address, setAddress,
   resume, setResume,
+
 }: JobApplicationFormProps) {
+
+  const [showResumeModal, setShowResumeModal] = useState(false);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (onSubmit) onSubmit();
@@ -63,6 +72,7 @@ export default function JobApplicationForm({
         placeholder="Full Name"
         className="input bg-slate-50 rounded-md px-4 py-2"
         required
+        disabled={disabled}
       />
 
       <input
@@ -72,6 +82,7 @@ export default function JobApplicationForm({
         type="email"
         className="input bg-slate-50 rounded-md px-4 py-2"
         required
+        disabled={disabled}
       />
 
       <input
@@ -80,6 +91,7 @@ export default function JobApplicationForm({
         placeholder="Phone"
         className="input bg-slate-50 rounded-md px-4 py-2"
         required
+        disabled={disabled}
       />
 
       <input
@@ -87,6 +99,7 @@ export default function JobApplicationForm({
         onChange={(e) => setAddress(e.target.value)}
         placeholder="Address"
         className="input bg-slate-50 rounded-md px-4 py-2"
+        disabled={disabled}
       />
 
       <input
@@ -94,11 +107,38 @@ export default function JobApplicationForm({
         accept=".pdf,.doc,.docx"
         onChange={(e) => setResume(e.target.files?.[0] || null)}
         className="input bg-slate-50 rounded-md px-4 py-2"
+        disabled={disabled}
       />
+
+      
+    {resume && (
+      <div className="mt-2 flex items-center gap-4">
+        <p className="text-sm text-gray-600">Uploaded: {resume.name}</p>
+        <button
+          type="button"
+          onClick={() => setShowResumeModal(true)}
+          className="text-blue-600 text-sm hover:underline"
+        >
+          Preview Resume
+        </button>
+        <button
+          type="button"
+          onClick={() => setResume(null)}
+          className="text-red-500 text-sm hover:underline"
+        >
+          Remove
+        </button>
+      </div>
+    )}
+
+    {showResumeModal && (
+      <ResumeModal resume={resume} onClose={() => setShowResumeModal(false)} />
+    )}
 
       <button
         type="submit"
-        className="bg-blue-500 text-white px-4 py-2 rounded"
+        className="bg-blue-500 text-white px-4 py-2 rounded disabled:opacity-50"
+        disabled={disabled}
       >
         Apply
       </button>
