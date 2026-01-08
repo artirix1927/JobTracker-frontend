@@ -69,7 +69,13 @@ export default function JobPostForm({
         <option value="CONTRACT">Contract</option>
         <option value="INTERN">Intern</option>
       </select>
-      <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">Create Job Post</button>
+      <button 
+        type="submit"
+        disabled={!title || !company} 
+        className="bg-blue-500 text-white px-4 py-2 rounded disabled:opacity-50"
+      >
+        Post Job
+      </button>
     </form>
   );
 }
