@@ -1,3 +1,4 @@
+import type { JobApplication, PageResponse } from "../types";
 import api from "./axios";
 
 
@@ -65,7 +66,7 @@ export async function createJobApplication(
 
 
 
-export async function getApplicationsByJob(payload: getApplicationsByJobPayload ) {
+export async function getApplicationsByJob(payload: getApplicationsByJobPayload ): Promise<PageResponse<JobApplication>> {
   const res = await api.get(
     `/job-application/by-job-post`, {params: payload}
   );

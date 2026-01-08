@@ -49,7 +49,7 @@ export default function MyJobsPage() {
       size: 10,
     }).then((data) => {
       setApplications(data.content);
-      setApplicationsTotalPages(data.totalPages);
+      setApplicationsTotalPages(data.page.totalPages);
     });
   }, [selectedJob, applicationsPage]);
 
