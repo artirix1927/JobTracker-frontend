@@ -58,12 +58,6 @@ export default function MyJobsPage() {
     });
   }, [selectedJob, applicationsPage]);
 
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => (e.key === "Escape" || e.key === "Backspace") && setOpenResume(null);
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-  }, []);
-
   const handleStatusChange = async (applicationId: number, newStatus: JobApplication["status"]) => {
     setApplications((prev) =>
       prev.map((app) => (app.id === applicationId ? { ...app, status: newStatus } : app))
@@ -203,7 +197,7 @@ export default function MyJobsPage() {
         </div>
       </div>
 
-      <ResumeModal resumePath={openResume} onClose={() => setOpenResume(null)} />
+      <ResumeModal resume={openResume} onClose={() => setOpenResume(null)} />
     </>
   );
 }

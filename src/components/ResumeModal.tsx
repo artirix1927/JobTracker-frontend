@@ -1,12 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Document, Page } from "react-pdf";
 
 interface Props {
-  resumePath: string | null;
+  resume: File | string | null; // File for local, string for server path
   onClose: () => void;
 }
 
-export default function ResumeModal({ resumePath, onClose }: Props) {
+export default function ResumeModal({ resume, onClose }: Props) {
   const [numPages, setNumPages] = React.useState<number | null>(null);
   const [pageNumber, setPageNumber] = React.useState(1);
 
@@ -15,7 +15,21 @@ export default function ResumeModal({ resumePath, onClose }: Props) {
     setPageNumber(1);
   };
 
-  if (!resumePath) return null;
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape" || e.key === "Backspace") {
+        onClose(); // just call the existing onClose callback
+      }
+    };
+
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [onClose]);
+
+  if (!resume) return null;
+
+  const fileProp =
+    typeof resume === "string" ? `http://localhost:8080/media/${resume}` : resume;
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -49,7 +63,7 @@ export default function ResumeModal({ resumePath, onClose }: Props) {
 
         <div className="flex-1 overflow-auto bg-gray-200">
           <Document
-            file={`http://localhost:8080/media/${resumePath}`}
+            file={fileProp}
             onLoadSuccess={onDocumentLoadSuccess}
             loading={<div className="p-8 text-center">Loading PDF...</div>}
             error={<div className="p-8 text-center text-red-600">Failed to load PDF</div>}
