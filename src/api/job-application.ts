@@ -26,7 +26,9 @@ export type getApplicationsByJobPayload = {
   jobPostId: number;
   page: number;
   size: number;
-  
+  sortBy?: string;
+  direction?: string;
+  status?: JobApplication["status"][],
 };
 
 
@@ -68,8 +70,27 @@ export async function createJobApplication(
 
 export async function getApplicationsByJob(payload: getApplicationsByJobPayload ): Promise<PageResponse<JobApplication>> {
   const res = await api.get(
-    `/job-application/by-job-post`, {params: payload}
-  );
+    `/job-application/by-job-post`, 
+    {
+      params: payload,
+      paramsSerializer: {
+        serialize: (params) => {
+          const searchParams = new URLSearchParams();
+
+          Object.entries(params).forEach(([key, value]) => {
+            if (Array.isArray(value)) {
+              value.forEach((v) => searchParams.append(key, v));
+            } else if (value !== undefined && value !== null) {
+              searchParams.append(key, String(value));
+            }
+          });
+
+          return searchParams.toString();
+        },
+      },
+    }
+  )
+
   return res.data;
 }
 

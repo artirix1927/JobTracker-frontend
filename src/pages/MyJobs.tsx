@@ -4,7 +4,7 @@ import JobPostCard from "../components/JobPostCard";
 import JobListItem from "../components/JobList";
 import ApplicationsList from "../components/ApplicationsList";
 import ResumeModal from "../components/ResumeModal";
-import { getJobsByUserPaged } from "../api/job-post"; // <- new paginated API
+import { getJobsByUserPaged } from "../api/job-post";
 import { getApplicationsByJob, setApplicationStatus } from "../api/job-application";
 import type { JobPost, JobApplication } from "../types";
 import { useAuth } from "../hooks";
@@ -29,6 +29,25 @@ export default function MyJobsPage() {
   const [jobsLoading, setJobsLoading] = useState(false);
   const [applicationsLoading, setApplicationsLoading] = useState(false);  
 
+  const [statusFilter, setStatusFilter] =
+    useState<JobApplication["status"][]>([]);
+
+  // Sorting & filtering
+  const [applicationsSortBy, setApplicationsSortBy] =
+    useState<"appliedAt" | "status">("appliedAt");
+  const [applicationsSortDir, setApplicationsSortDir] =
+    useState<"asc" | "desc">("desc");
+
+
+  const STATUSES: JobApplication["status"][] = [
+    "APPLIED",
+    "INTERVIEW",
+    "OFFER",
+    "REJECTED",
+  ];
+
+  const [filterOpen, setFilterOpen] = useState(false);
+
   useEffect(() => {
     if (!user) return;
     setJobsLoading(true);
@@ -51,12 +70,15 @@ export default function MyJobsPage() {
       jobPostId: selectedJob.id,
       page: applicationsPage,
       size: 10,
+      sortBy: applicationsSortBy,
+      direction: applicationsSortDir,
+      status: statusFilter.length > 0 ? statusFilter : undefined,
     }).then((data) => {
       setApplications(data.content);
       setApplicationsTotalPages(data.page.totalPages);
       setApplicationsLoading(false);
     });
-  }, [selectedJob, applicationsPage]);
+  }, [selectedJob, applicationsPage, applicationsSortBy, applicationsSortDir, statusFilter]);
 
   const handleStatusChange = async (applicationId: number, newStatus: JobApplication["status"]) => {
     setApplications((prev) =>
@@ -79,7 +101,6 @@ export default function MyJobsPage() {
 
           {/* LEFT: job list */}
           <div className="w-1/3 border-r overflow-y-auto">
-            {/* Skeleton loader */}
             {jobsLoading &&
               Array.from({ length: 5 }).map((_, i) => (
                 <div
@@ -158,7 +179,73 @@ export default function MyJobsPage() {
                     No applications yet
                   </div>
                 )}
-                
+
+                {/* Sorting & Status filter */}
+                <div className="flex gap-2 mb-3">
+                  <select
+                    value={applicationsSortBy}
+                    onChange={(e) => {
+                      setApplicationsPage(0);
+                      setApplicationsSortBy(e.target.value as any);
+                    }}
+                    className="border rounded px-2 py-1"
+                  >
+                    <option value="appliedAt">Applied date</option>
+                  </select>
+
+                  <select
+                    value={applicationsSortDir}
+                    onChange={(e) => {
+                      setApplicationsPage(0);
+                      setApplicationsSortDir(e.target.value as any);
+                    }}
+                    className="border rounded px-2 py-1"
+                  >
+                    <option value="desc">Descending</option>
+                    <option value="asc">Ascending</option>
+                  </select>
+
+                  <div className="relative">
+                    <button
+                      onClick={() => setFilterOpen((v) => !v)}
+                      className="border rounded px-3 py-1 bg-white"
+                    >
+                      Status filter {statusFilter.length > 0 && `(${statusFilter.length})`}
+                    </button>
+
+                    {filterOpen && (
+                      <div className="absolute z-10 mt-1 bg-white border rounded shadow p-2">
+                        {STATUSES.map((status) => (
+                          <label key={status} className="flex items-center gap-2 text-sm">
+                            <input
+                              type="checkbox"
+                              checked={statusFilter.includes(status)}
+                              onChange={(e) => {
+                                setApplicationsPage(0);
+                                setStatusFilter((prev) =>
+                                  e.target.checked
+                                    ? [...prev, status]
+                                    : prev.filter((s) => s !== status)
+                                );
+                              }}
+                            />
+                            {status}
+                          </label>
+                        ))}
+
+                        {statusFilter.length > 0 && (
+                          <button
+                            onClick={() => setStatusFilter([])}
+                            className="mt-2 text-xs text-blue-600 underline"
+                          >
+                            Clear
+                          </button>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
                 {!applicationsLoading && applications.length > 0 && (
                   <ApplicationsList
                     applications={applications}
