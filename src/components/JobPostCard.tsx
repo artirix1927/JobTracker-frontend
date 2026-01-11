@@ -83,34 +83,25 @@ export default function JobPostCard({
         </ReactMarkdown>
       </div>
 
-      {showApplyButton && (
-        <>
-          {isTruncated && (
-            <div className="flex justify-between items-center mt-2">
-              <button onClick={() => setExpanded(!expanded)} className="text-sm text-blue-600 hover:underline">
-                {expanded ? "Show less" : "Show more"}
-              </button>
+      {isTruncated && (
+        <div className={`flex justify-between items-center mt-2 ${!showApplyButton ? "" : ""}`}>
+          <button
+            onClick={() => setExpanded(!expanded)}
+            className="text-sm text-blue-600 hover:underline"
+          >
+            {expanded ? "Show less" : "Show more"}
+          </button>
 
-              <button
-                onClick={() => navigate(`/apply/${id}`)}
-                className="text-sm bg-green-600 text-white px-3 py-1.5 rounded hover:bg-green-700 transition"
-              >
-                Apply
-              </button>
-            </div>
+          {/* Apply button */}
+          {showApplyButton && (
+            <button
+              onClick={() => navigate(`/apply/${id}`)}
+              className="text-sm bg-green-600 text-white px-3 py-1.5 rounded hover:bg-green-700 transition"
+            >
+              Apply
+            </button>
           )}
-
-          {!isTruncated && (
-            <div className="flex justify-end mt-2">
-              <button
-                onClick={() => navigate(`/apply/${id}`)}
-                className="text-sm bg-green-600 text-white px-3 py-1.5 rounded hover:bg-green-700 transition"
-              >
-                Apply
-              </button>
-            </div>
-          )}
-        </>
+        </div>
       )}
     </div>
   );
