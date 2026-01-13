@@ -12,11 +12,28 @@ interface Props {
   app: JobApplication;
   onStatusChange: (id: number, status: JobApplication["status"]) => void;
   onViewResume: (path: string) => void;
+  highlighted?: boolean;
+  
 }
 
-export default function ApplicationItem({ app, onStatusChange, onViewResume }: Props) {
+export default function ApplicationItem({ app, onStatusChange, onViewResume, highlighted}: Props) {
+
+
+  const flashClass =
+  highlighted && app.status === "OFFER"
+    ? "bg-green-100"
+    : highlighted && app.status === "REJECTED"
+    ? "bg-red-100"
+    : "";
+
+  
+  console.log(highlighted, app.status)
+
+
   return (
-    <div className="bg-white rounded-lg shadow-sm border p-4 mb-4 flex justify-between items-start">
+    <div className={`rounded-lg shadow-sm border p-4 mb-4 
+                     flex justify-between items-start ${flashClass || "bg-white"} 
+                     transition-colors duration-700 ease-out`}>
       {/* LEFT: applicant info */}
       <div className="flex gap-4">
         <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-semibold">

@@ -18,6 +18,7 @@ export default function MyJobsPage() {
   const [statusFilter, setStatusFilter] = useState<JobApplication["status"][]>([]);
   const [openResume, setOpenResume] = useState<string | null>(null);
   const [showJobPost, setShowJobPost] = useState(false);
+  const [highlightedAppId, setHighlightedAppId] = useState<number | null>(null);
 
   const { jobs, totalPages: jobsTotalPages, loading: jobsLoading } = useJobs(user?.id, jobsPage);
   const { applications, totalPages: applicationsTotalPages, loading: applicationsLoading, setApplications } = useApplications({
@@ -32,6 +33,12 @@ export default function MyJobsPage() {
     setApplications((prev) =>
       prev.map((app) => (app.id === applicationId ? { ...app, status: newStatus } : app))
     );
+
+    setHighlightedAppId(applicationId);
+
+    setTimeout(() => {
+      setHighlightedAppId(null);
+    }, 400);
 
     try {
       await setApplicationStatus({ jobApplicationId: applicationId, newStatus });
@@ -88,6 +95,7 @@ export default function MyJobsPage() {
                   page={applicationsPage}
                   totalPages={applicationsTotalPages}
                   onPageChange={setApplicationsPage}
+                  highlightedAppId={highlightedAppId}
                 />
               </>
             ) : (

@@ -18,6 +18,7 @@ export function ApplicationsSection({
   page,
   totalPages,
   onPageChange,
+  highlightedAppId
 }: {
   applications: JobApplication[];
   loading: boolean;
@@ -32,6 +33,7 @@ export function ApplicationsSection({
   page: number;
   totalPages: number;
   onPageChange: (p: number) => void;
+  highlightedAppId?: number | null;
 }) {
   return (
     <div className="overflow-y-auto p-6 bg-gray-50">
@@ -73,6 +75,7 @@ export function ApplicationsSection({
           applications={applications}
           onStatusChange={onStatusChange}
           onViewResume={onViewResume}
+          highlightedAppId={highlightedAppId}
         />
       )}
 
