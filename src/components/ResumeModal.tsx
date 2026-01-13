@@ -32,8 +32,8 @@ export default function ResumeModal({ resume, onClose }: Props) {
     typeof resume === "string" ? `http://localhost:8080/media/${resume}` : resume;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white w-[90%] h-[90%] rounded-lg overflow-hidden relative flex flex-col">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 animate-fade-in">
+      <div className="bg-white w-[90%] h-[90%] rounded-lg overflow-hidden relative flex flex-col animate-scale-in">
         <button
           className="absolute top-4 right-4 text-gray-600 hover:text-black z-10 bg-white rounded-full p-2 shadow"
           onClick={onClose}
@@ -71,7 +71,7 @@ export default function ResumeModal({ resume, onClose }: Props) {
             <div className="flex justify-center py-6">
               <Page
                 pageNumber={pageNumber}
-                width={Math.min(window.innerWidth * 0.75, 900)}
+                scale={1.4}
                 renderTextLayer={false}
                 renderAnnotationLayer={false}
               />
