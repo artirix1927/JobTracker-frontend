@@ -48,7 +48,7 @@ export default function JobPostCard({
   const isTruncated = useMemo(() => description.length > 300, [description]);
 
   return (
-    <div className="border rounded-md p-4 my-2 bg-white shadow-sm">
+    <div className="border rounded-md p-4 my-2 bg-white shadow-sm transition-shadow hover:shadow-md">
       <div className="flex justify-between items-center mb-2">
         <h2 className="text-lg font-bold">{title}</h2>
         <span className="text-sm font-medium text-gray-500">{formatJobType(jobType)}</span>
@@ -62,7 +62,14 @@ export default function JobPostCard({
       <a href={companySearchUrl} target="_blank" rel="noopener noreferrer" className="text-gray-700 mb-2 block hover:underline">{company}</a>
       <a href={locationMapsUrl} target="_blank" rel="noopener noreferrer" className="text-gray-700 mb-2 block hover:underline">{location}</a>
 
-      <div className={`text-gray-800 mb-2 prose transition-all ${!expanded && isTruncated ? "line-clamp-5" : ""}`}>
+      <div
+        className={`
+          text-gray-800 mb-2 prose
+          overflow-hidden
+          transition-[max-height] duration-300 ease-in-out
+          ${expanded ? "max-h-[1000px]" : "max-h-40"}
+        `}
+      >
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
           rehypePlugins={[rehypeHighlight]}
@@ -87,7 +94,7 @@ export default function JobPostCard({
         <div className={`flex justify-between items-center mt-2 ${!showApplyButton ? "" : ""}`}>
           <button
             onClick={() => setExpanded(!expanded)}
-            className="text-sm text-blue-600 hover:underline"
+            className="text-sm text-blue-600 hover:underline transition-colors duration-150"
           >
             {expanded ? "Show less" : "Show more"}
           </button>
