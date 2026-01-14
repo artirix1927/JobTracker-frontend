@@ -5,6 +5,7 @@ import App from "./App";
 
 import "./styles/index.css"
 import { AuthProvider } from "./AuthContext";
+import { ToastProvider } from "./ToastContext";
 
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
@@ -13,7 +14,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <BrowserRouter>
       <AuthProvider>
-        <App />
+        <ToastProvider>
+          <App />
+        </ToastProvider>
       </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>
