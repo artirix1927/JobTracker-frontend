@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { login } from "../api/auth";
+import { useToast } from "../ToastContext";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const { showToast } = useToast();
+  
 
   const navigate = useNavigate()
 
@@ -17,7 +19,7 @@ export default function Login() {
       await login(email, password);
       navigate("/")
     } catch (e) {
-      setError("Invalid credentials")
+      showToast("Could'nt log in. Try again.")
     }
   };
 
@@ -45,7 +47,6 @@ export default function Login() {
 
         <p>Don’t have an account? <Link to="/register"><span style={{textDecoration:"underline"}}>Register</span></Link></p>
 
-        {error && <div className="text-red-500 mt-2">{error}</div>}
       </div>
     </div>
   );

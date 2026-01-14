@@ -1,4 +1,5 @@
 import { createJobPost } from "../api/job-post";
+import { useToast } from "../ToastContext";
 
 type JobPostFormProps = {
   onSuccess?: () => void;
@@ -25,6 +26,10 @@ export default function JobPostForm({
   jobType, setJobType,
   location, setLocation,
 }: JobPostFormProps) {
+
+  const { showToast } = useToast()
+
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -36,11 +41,11 @@ export default function JobPostForm({
         jobType,
         location,
       });
-      alert("Job post created!");
+      showToast("Job post created!");
       if (onSuccess) onSuccess();
     } catch (err) {
       console.error(err);
-      alert("Failed to create job post");
+      showToast("Failed to create job post.");
     }
   };
 

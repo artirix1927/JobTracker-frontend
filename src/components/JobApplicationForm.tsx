@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { createJobApplication } from "../api/job-application";
 import ResumeModal from "./ResumeModal";
+import { useToast } from "../ToastContext";
 
 type JobApplicationFormProps = {
   onSuccess?: () => void;
@@ -39,6 +40,7 @@ export default function JobApplicationForm({
 }: JobApplicationFormProps) {
 
   const [showResumeModal, setShowResumeModal] = useState(false);
+  const { showToast } = useToast()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,7 +59,7 @@ export default function JobApplicationForm({
         if (onSuccess) onSuccess();
     } catch (err) {
       console.error(err);
-      alert("Failed to submit application");
+      showToast("Failed to submit application");
     }
   };
 

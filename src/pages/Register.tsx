@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { register } from "../api/auth";
+import { useToast } from "../ToastContext";
 
 export default function Register() {
   const [email, setEmail] = useState("");
@@ -8,7 +9,7 @@ export default function Register() {
   const [name, setName] = useState("")
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const { showToast } = useToast()
   const navigate = useNavigate(); // <-- hook to navigate
   
     const handleRegister= async () => {
@@ -17,7 +18,7 @@ export default function Register() {
         await register(name, email, password);
         navigate("/login")
       } catch (e) {
-        setError("Invalid credentials")
+        showToast("Could'nt register in. Try again.")
       }
     };
   
@@ -51,9 +52,6 @@ export default function Register() {
           {loading ? "Setting up an account..." : "Register"}</button>
 
         <p>Already have an account? <Link to="/login"><span style={{textDecoration:"underline"}}>Log-in</span></Link></p>
-          
-        {error && <div className="text-red-500 mt-2">{error}</div>}
-
       </div>
     </div>
   );
