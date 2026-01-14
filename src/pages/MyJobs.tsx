@@ -7,6 +7,7 @@ import Navbar from "../components/Navbar";
 import JobPostCard from "../components/JobPostCard";
 import { ApplicationsSection } from "../components/ApplicationsSection";
 import ResumeModal from "../components/ResumeModal";
+import { useToast } from "../ToastContext";
 
 export default function MyJobsPage() {
   const { user } = useAuth();
@@ -19,6 +20,7 @@ export default function MyJobsPage() {
   const [openResume, setOpenResume] = useState<string | null>(null);
   const [showJobPost, setShowJobPost] = useState(false);
   const [highlightedAppId, setHighlightedAppId] = useState<number | null>(null);
+  const { showToast } = useToast();
 
   const { jobs, totalPages: jobsTotalPages, loading: jobsLoading } = useJobs(user?.id, jobsPage);
   const { applications, totalPages: applicationsTotalPages, loading: applicationsLoading, setApplications } = useApplications({
@@ -30,20 +32,33 @@ export default function MyJobsPage() {
   });
 
   const handleStatusChange = async (applicationId: number, newStatus: JobApplication["status"]) => {
-    setApplications((prev) =>
-      prev.map((app) => (app.id === applicationId ? { ...app, status: newStatus } : app))
+    const prevStatus = applications.find(a => a.id === applicationId)?.status;
+    if (!prevStatus) return;
+
+    setApplications(prev =>
+      prev.map(app =>
+        app.id === applicationId ? { ...app, status: newStatus } : app
+      )
     );
 
     setHighlightedAppId(applicationId);
-
     setTimeout(() => {
       setHighlightedAppId(null);
     }, 400);
 
     try {
       await setApplicationStatus({ jobApplicationId: applicationId, newStatus });
+      showToast("Failed to update status. Please try again.");
     } catch (err) {
       console.error("Failed to update status", err);
+
+      // Rollback
+      setApplications(prev =>
+        prev.map(app =>
+          app.id === applicationId ? { ...app, status: prevStatus } : app
+        )
+      );
+
     }
   };
 
