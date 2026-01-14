@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useApplications, useAuth, useJobs } from "../hooks";
 import type { JobApplication, JobPost } from "../types";
 import { setApplicationStatus } from "../api/job-application";
@@ -46,6 +46,12 @@ export default function MyJobsPage() {
       console.error("Failed to update status", err);
     }
   };
+
+  useEffect(() => {
+    if (!selectedJob && jobs.length > 0) {
+      setSelectedJob(jobs[0]);
+    }
+  }, [jobs, selectedJob]);
 
   return (
     <>
