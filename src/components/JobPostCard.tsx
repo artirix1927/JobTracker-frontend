@@ -93,16 +93,8 @@ export default function JobPostCard({
         </ReactMarkdown>
       </div>
 
-      {isTruncated && (
-        <div className={`flex justify-between items-center mt-2 ${!showApplyButton ? "" : ""}`}>
-          <button
-            onClick={() => setExpanded(!expanded)}
-            className="text-sm text-blue-600 hover:underline transition-colors duration-150"
-          >
-            {expanded ? "Show less" : "Show more"}
-          </button>
-
-          {/* Apply button */}
+      <div className="flex justify-between items-center mt-2">
+        <div>
           {showApplyButton && user && (
             <button
               onClick={() => navigate(`/apply/${id}`)}
@@ -112,7 +104,18 @@ export default function JobPostCard({
             </button>
           )}
         </div>
-      )}
+
+        <div>
+          {isTruncated && (
+            <button
+              onClick={() => setExpanded(!expanded)}
+              className="text-sm text-blue-600 hover:underline transition-colors duration-150"
+            >
+              {expanded ? "Show less" : "Show more"}
+            </button>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
