@@ -20,11 +20,21 @@ export default function ResumeModal({ resume, onClose }: Props) {
       if (e.key === "Escape" || e.key === "Backspace") {
         onClose(); // just call the existing onClose callback
       }
+
+      if (e.key === "ArrowLeft") 
+        setPageNumber(pageNumber>1 ? pageNumber-1 : pageNumber);
+
+      if (e.key === "ArrowRight")
+        setPageNumber(pageNumber+1);
+      
+
     };
 
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, [onClose]);
+
+
 
   if (!resume) return null;
 
