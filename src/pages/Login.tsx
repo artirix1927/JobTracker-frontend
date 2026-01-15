@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { login } from "../api/auth";
 import { useToast } from "../ToastContext";
+import { useAuth } from "../hooks";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -9,6 +10,7 @@ export default function Login() {
 
   const [loading, setLoading] = useState(false);
   const { showToast } = useToast();
+  const { login: setUserInContext } = useAuth();
   
 
   const navigate = useNavigate()
@@ -16,7 +18,8 @@ export default function Login() {
   const handleLogin = async () => {
     try {
       setLoading(true)
-      await login(email, password);
+      const { accessToken } = await login(email, password);
+      setUserInContext(accessToken);
       navigate("/")
     } catch (e) {
       showToast("Could'nt log in. Try again.")

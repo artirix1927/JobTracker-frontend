@@ -17,44 +17,41 @@ interface User {
 
 interface AuthContextType {
   user: User | null;
+  login: (token: string) => void;
   logout: () => void;
 }
-
-export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 interface Props {
   children: ReactNode;
 }
 
+
+export const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+
 export const AuthProvider = ({ children }: Props) => {
   const [user, setUser] = useState<User | null>(null);
 
-  useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-    if (token) {
-      try {
-        const payload: TokenPayload = jwtDecode(token);
-        console.log(payload)
-        setUser({
-          id: payload.id,
-          email: payload.email,
-          role: payload.role,
-        });
-      } catch (e) {
-        console.error("Invalid token", e);
-        setUser(null);
-      }
-    }
-  }, []);
+  const login = (token: string) => {
+    localStorage.setItem("accessToken", token);
+    const payload: TokenPayload = jwtDecode(token);
+    setUser({ id: payload.id, email: payload.email, role: payload.role });
+  };
 
   const logout = () => {
     localStorage.removeItem("accessToken");
     setUser(null);
-    window.location.reload(); // optional
   };
 
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    if (token) {
+      login(token); // initialize user on app start
+    }
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ user, logout }}>
+    <AuthContext.Provider value={{ user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
