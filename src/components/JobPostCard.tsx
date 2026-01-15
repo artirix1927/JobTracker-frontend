@@ -4,6 +4,7 @@ import rehypeHighlight from "rehype-highlight";
 import "highlight.js/styles/github.css";
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks";
 
 
 type JobPostProps = {
@@ -29,6 +30,8 @@ export default function JobPostCard({
 }: JobPostProps) {
   const [expanded, setExpanded] = useState(false);
   const navigate = useNavigate();
+
+  const { user } = useAuth()
 
   const companySearchUrl = `https://www.google.com/search?q=${encodeURIComponent(company)}`;
   const locationMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location)}`;
@@ -100,7 +103,7 @@ export default function JobPostCard({
           </button>
 
           {/* Apply button */}
-          {showApplyButton && (
+          {showApplyButton && user && (
             <button
               onClick={() => navigate(`/apply/${id}`)}
               className="text-sm bg-green-600 text-white px-3 py-1.5 rounded hover:bg-green-700 transition"
