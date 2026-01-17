@@ -18,6 +18,13 @@ interface Props {
   
 }
 
+const allowedTransitions: Record<JobApplication["status"], JobApplication["status"][]> = {
+  APPLIED: ["INTERVIEW", "REJECTED"],
+  INTERVIEW: ["OFFER", "REJECTED"],
+  OFFER: [],
+  REJECTED: [],
+};
+
 export default function ApplicationItem({ app, onStatusChange, onViewResume, highlighted}: Props) {
 
 
@@ -61,16 +68,18 @@ export default function ApplicationItem({ app, onStatusChange, onViewResume, hig
         <select
           value={app.status}
           onChange={(e) =>
-            setPendingStatus(
-              e.target.value as JobApplication["status"]
-            )
+          setPendingStatus(e.target.value as JobApplication["status"])
           }
           className={`text-xs px-2 py-1 rounded-full border bg-white cursor-pointer ${statusClasses[app.status]}`}
+          
         >
-          <option value="APPLIED">Applied</option>
-          <option value="INTERVIEW">Interview</option>
-          <option value="OFFER">Offer</option>
-          <option value="REJECTED">Rejected</option>
+          <option value={app.status}>{app.status}</option>
+
+          {allowedTransitions[app.status].map(status => (
+            <option key={status} value={status}>
+              {status}
+            </option>
+          ))}
         </select>
 
         {app.resumePath && (
