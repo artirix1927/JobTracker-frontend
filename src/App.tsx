@@ -10,6 +10,7 @@ import MyJobsPage from "./pages/MyJobs";
 
 import './pdfWorker'
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import { Enable2FaPage } from "./pages/Enable2Fa";
 
 function App() {
   return <>
@@ -24,6 +25,7 @@ function App() {
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/jobs" element={<JobsPage />} />
       <Route path="/apply/:jobId" element={<ApplyPage />} />
+      <Route path="/enable-2fa" element={<Enable2FaPage />} />
 
       <Route
         element={<ProtectedRoute allowedRoles={["EMPLOYER", "ADMIN"]} />}

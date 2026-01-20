@@ -6,12 +6,17 @@ export const login = async (email: string, password: string) => {
     password,
   });
 
-  const { accessToken, refreshToken } = res.data;
+  const data = res.data;
 
+  if (data.require2FA) {
+    return data;
+  }
+
+  const { accessToken, refreshToken } = data;
   localStorage.setItem("accessToken", accessToken);
   localStorage.setItem("refreshToken", refreshToken);
 
-  return res.data;
+  return data;
 };
 
 export const register = async (
