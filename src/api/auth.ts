@@ -1,4 +1,4 @@
-import { authApi } from "./axios";
+import api, { authApi } from "./axios";
 
 export const login = async (email: string, password: string) => {
   const res = await authApi.post("/auth/login", {
@@ -25,3 +25,29 @@ export const register = async (
     password,
   });
 };
+
+export const verify2fa = async (email: string, code: number) => {
+  const res = await authApi.post("/auth/verify-2fa", {
+    email,
+    code,
+  });
+
+  const { accessToken, refreshToken } = res.data;
+
+  localStorage.setItem("accessToken", accessToken);
+  localStorage.setItem("refreshToken", refreshToken);
+
+  return res.data;
+};
+
+
+// Supposed to be used when user already logged in so we use regular api instance
+export const enable2FA = async () => {
+  const res = await api.post("/auth/enable-2fa");
+  return res.data;
+}
+
+export const verify2FaSetup = async (code: number) => {
+  const res = await api.post("/auth/verify-2fa-setup", { code });
+  return res.data;
+}
