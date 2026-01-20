@@ -1,7 +1,14 @@
 import type { CSSProperties } from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../hooks";
+import LogoutButton from "./LogoutButton";
 
-export default function Navbar({ isLoggedIn = false, username = "" }) {
+export default function Navbar({
+}) {
+  const { user } = useAuth();
+
+  const isLoggedIn = !!user;
+
   return (
     <nav style={styles.nav}>
       <div style={styles.logo}><Link to="/">JobTracker</Link></div>
@@ -14,8 +21,12 @@ export default function Navbar({ isLoggedIn = false, username = "" }) {
           </>
         ) : (
           <div style={styles.profile}>
-            <span>{username}</span>
-            <button style={styles.logoutButton}>Logout</button>
+      
+            <Link to="/enable-2fa" style={styles.link}>
+              Enable 2FA
+            </Link>
+
+            <LogoutButton />
           </div>
         )}
       </div>
@@ -58,13 +69,5 @@ const styles: Record<string, CSSProperties> = {
     display: "flex",
     alignItems: "center",
     gap: "12px",
-  },
-  logoutButton: {
-    backgroundColor: "#2563eb",
-    color: "white",
-    border: "none",
-    padding: "6px 12px",
-    borderRadius: "6px",
-    cursor: "pointer",
   },
 };

@@ -31,6 +31,17 @@ export const register = async (
   });
 };
 
+export const logout = async () => {
+  try {
+    await api.post("/auth/logout");
+  } catch {
+    // ignore – user is logging out anyway
+  } finally {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+  }
+};
+
 export const verify2fa = async (email: string, code: number) => {
   const res = await authApi.post("/auth/verify-2fa", {
     email,
@@ -56,3 +67,4 @@ export const verify2FaSetup = async (code: number) => {
   const res = await api.post("/auth/verify-2fa-setup", { code });
   return res.data;
 }
+
