@@ -2,7 +2,7 @@
 import { createContext, useEffect, useState, type ReactNode } from "react";
 import {jwtDecode} from "jwt-decode";
 
-interface TokenPayload {
+export interface TokenPayload {
   id: number;
   email: string;
   role: string;
@@ -25,9 +25,7 @@ interface Props {
   children: ReactNode;
 }
 
-
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
 
 export const AuthProvider = ({ children }: Props) => {
   const [user, setUser] = useState<User | null>(null);
@@ -40,9 +38,9 @@ export const AuthProvider = ({ children }: Props) => {
 
   const logout = () => {
     localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
     setUser(null);
   };
-
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
     if (token) {
