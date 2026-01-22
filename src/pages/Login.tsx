@@ -7,6 +7,7 @@ import { useAuth } from "../hooks";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const { showToast } = useToast();
@@ -21,7 +22,7 @@ export default function Login() {
   const handleLogin = async () => {
     try {
       setLoading(true);
-      const res = await login(email, password);
+      const res = await login(email, password, rememberMe);
 
       // if backend responds with require2FA
       if (res.require2FA) {
@@ -45,7 +46,7 @@ export default function Login() {
   const handleVerify2FA = async () => {
     try {
       setLoading(true);
-      const res = await verify2fa(email, parseInt(twoFACode)); // call your /verify-2fa API
+      const res = await verify2fa(email, parseInt(twoFACode), rememberMe); // call your /verify-2fa API
       setUserInContext(res.accessToken);
       navigate("/");
     } catch (e) {
@@ -75,6 +76,18 @@ export default function Login() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+
+            <div className="auth-remember">
+              <input
+                id="rememberMe"
+                type="checkbox"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+              />
+              <label htmlFor="rememberMe">
+                Remember me
+              </label>
+            </div>
 
             <button onClick={handleLogin} disabled={loading} className="disabled:opacity-50">
               {loading ? "Logging in…" : "Login"}

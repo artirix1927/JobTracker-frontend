@@ -1,9 +1,10 @@
 import api, { authApi } from "./axios";
 
-export const login = async (email: string, password: string) => {
+export const login = async (email: string, password: string, isRememberMe: boolean) => {
   const res = await authApi.post("/auth/login", {
     email,
     password,
+    isRememberMe,
   });
 
   const data = res.data;
@@ -42,10 +43,11 @@ export const logout = async () => {
   }
 };
 
-export const verify2fa = async (email: string, code: number) => {
+export const verify2fa = async (email: string, code: number, isRememberMe: boolean) => {
   const res = await authApi.post("/auth/verify-2fa", {
     email,
     code,
+    isRememberMe,
   });
 
   const { accessToken, refreshToken } = res.data;

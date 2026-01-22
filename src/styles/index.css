@@ -52,3 +52,20 @@ body {
   border-radius: 8px;
   cursor: pointer;
 }
+
+.auth-remember {
+  margin-block: 12px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.auth-remember input[type="checkbox"] {
+  width: auto;
+  margin: 0;
+  cursor: pointer;
+}
