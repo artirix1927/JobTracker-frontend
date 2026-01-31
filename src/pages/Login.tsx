@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { login, verify2fa } from "../api/auth";
 import { useToast } from "../ToastContext";
 import { useAuth } from "../hooks";
+import { authApi } from "../api/axios";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -54,6 +55,11 @@ export default function Login() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const submit = async () => {
+    await authApi.post("/auth/forgot-password", { email });
+    showToast("If the email exists, a reset link was sent.");
   };
 
 
@@ -109,7 +115,11 @@ export default function Login() {
           </>
         )}
 
+        <p  className="my-4"><span style={{textDecoration:"underline"}} onClick={submit}>Forgot your password ?</span></p>
         <p>Don’t have an account? <Link to="/register"><span style={{textDecoration:"underline"}}>Register</span></Link></p>
+
+
+        
 
       </div>
     </div>
